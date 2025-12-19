@@ -18,4 +18,5 @@ locals {
     gitlabselfmanaged = lower(var.vcs_provider) == "gitlabselfmanaged" ? aws_codeconnections_connection.gitlabselfmanaged[0].arn : ""
     codecommit        = "null"
   }
+  provision_oss = (var.terraform_distribution == "oss" || var.terraform_distribution == "tofu") ? true : false
 }

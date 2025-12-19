@@ -35,7 +35,7 @@ variable "audit_account_id" {
 
 variable "aft_framework_repo_url" {
   description = "Git repo URL where the AFT framework should be sourced from"
-  default     = "https://github.com/aws-ia/terraform-aws-control_tower_account_factory.git"
+  default     = "https://github.com/spacelift-io/terraform-aws-control_tower_account_factory.git"
   type        = string
   validation {
     condition     = length(var.aft_framework_repo_url) > 0
@@ -310,7 +310,7 @@ variable "account_provisioning_customizations_repo_branch" {
 #########################################
 
 variable "terraform_version" {
-  description = "Terraform version being used for AFT"
+  description = "Terraform or OpenTofu version being used for AFT"
   type        = string
   default     = "1.6.0"
   validation {
@@ -320,11 +320,11 @@ variable "terraform_version" {
 }
 
 variable "terraform_distribution" {
-  description = "Terraform distribution being used for AFT - valid values are oss, tfc, or tfe"
+  description = "Terraform or Opentofu distribution being used for AFT - valid values are oss, tofu, tfc, or tfe"
   type        = string
   default     = "oss"
   validation {
-    condition     = contains(["oss", "tfc", "tfe"], var.terraform_distribution)
+    condition     = contains(["oss", "tofu", "tfc", "tfe"], var.terraform_distribution)
     error_message = "Valid values for var: terraform_distribution are (oss, tfc, tfe)."
   }
 }
