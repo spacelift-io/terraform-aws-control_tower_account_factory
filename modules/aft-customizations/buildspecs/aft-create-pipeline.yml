@@ -16,6 +16,7 @@ phases:
       - TF_KMS_KEY_ID=$(aws ssm get-parameter --name $SSM_TF_KMS_KEY_ID --query "Parameter.Value" --output text)
       - TF_DDB_TABLE=$(aws ssm get-parameter --name $SSM_TF_DDB_TABLE --query "Parameter.Value" --output text)
       - TF_VERSION=$(aws ssm get-parameter --name $SSM_TF_VERSION --query "Parameter.Value" --output text)
+      - TF_DISTRIBUTION=$(aws ssm get-parameter --name $SSM_TF_DISTRIBUTION --query "Parameter.Value" --output text)
 
 
       # Configure Development SSH Key
@@ -46,11 +47,19 @@ phases:
       - $DEFAULT_PATH/aws-aft-core-framework/sources/scripts/creds.sh
 
       # Install Terraform
-      - cd /tmp
-      - echo "Installing Terraform"
-      - curl -q -o terraform_${TF_VERSION}_linux_amd64.zip https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip
-      - unzip -q -o terraform_${TF_VERSION}_linux_amd64.zip && mv terraform /usr/bin
-      - terraform --version
+      - |
+        cd /tmp
+        if [ "$TF_DISTRIBUTION" = "oss" ]; then
+          echo "Installing Terraform"
+          curl -o terraform_${TF_VERSION}_linux_amd64.zip https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip
+          unzip -o terraform_${TF_VERSION}_linux_amd64.zip && mv terraform /usr/bin
+          terraform -no-color --version
+        else
+          echo "Installing Tofu"
+          curl -L -o tofu_${TF_VERSION}_linux_amd64.zip https://github.com/opentofu/opentofu/releases/download/v${TF_VERSION}/tofu_${TF_VERSION}_linux_amd64.zip
+          unzip -o tofu_${TF_VERSION}_linux_amd64.zip && mv tofu /usr/bin
+          tofu -no-color --version
+        fi
 
       # Install Python Dependencies
       - python3 -m venv ./venv
@@ -77,5 +86,11 @@ phases:
     on-failure: ABORT
     commands:
       - export AWS_PROFILE=aft-management-admin
-      - terraform init -no-color
-      - terraform apply -var="account_id=$VENDED_ACCOUNT_ID" -no-color --auto-approve
+      - |
+        if [ "$TF_DISTRIBUTION" = "oss" ]; then
+          terraform init -no-color
+          terraform apply -var="account_id=$VENDED_ACCOUNT_ID" -no-color --auto-approve
+        else
+          tofu init -no-color
+          tofu apply -var="account_id=$VENDED_ACCOUNT_ID" -no-color --auto-approve
+        fi

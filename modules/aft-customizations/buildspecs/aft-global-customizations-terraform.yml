@@ -74,7 +74,7 @@ phases:
       # Apply customizations
       - source $DEFAULT_PATH/aft-venv/bin/activate
       - |
-        if [ $TF_DISTRIBUTION = "oss" ]; then
+        if [ $TF_DISTRIBUTION = "oss" ] || [ "$TF_DISTRIBUTION" = "tofu" ]; then
           TF_BACKEND_REGION=$(aws ssm get-parameter --name "/aft/config/oss-backend/primary-region" --query "Parameter.Value" --output text)
           TF_KMS_KEY_ID=$(aws ssm get-parameter --name "/aft/config/oss-backend/kms-key-id" --query "Parameter.Value" --output text)
           TF_DDB_TABLE=$(aws ssm get-parameter --name "/aft/config/oss-backend/table-id" --query "Parameter.Value" --output text)
@@ -82,12 +82,19 @@ phases:
           TF_S3_KEY=$VENDED_ACCOUNT_ID-aft-global-customizations/terraform.tfstate
 
           cd /tmp
-          echo "Installing Terraform"
-          curl -q -o terraform_${TF_VERSION}_linux_amd64.zip https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip
-          mkdir -p /opt/aft/bin
-          unzip -q -o terraform_${TF_VERSION}_linux_amd64.zip
-          mv terraform /opt/aft/bin
-          /opt/aft/bin/terraform -no-color --version
+          if [ "$TF_DISTRIBUTION" = "oss" ]; then
+            echo "Installing Terraform"
+            curl -o terraform_${TF_VERSION}_linux_amd64.zip https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip
+            mkdir -p /opt/aft/bin
+            unzip -o terraform_${TF_VERSION}_linux_amd64.zip && mv terraform /opt/aft/bin
+            /opt/aft/bin/terraform -no-color --version
+          else
+            echo "Installing Tofu"
+            curl -L -o tofu_${TF_VERSION}_linux_amd64.zip https://github.com/opentofu/opentofu/releases/download/v${TF_VERSION}/tofu_${TF_VERSION}_linux_amd64.zip
+            mkdir -p /opt/aft/bin
+            unzip -o tofu_${TF_VERSION}_linux_amd64.zip && mv tofu /opt/aft/bin
+            /opt/aft/bin/tofu -no-color --version
+          fi
 
           # Move back to customization module
           cd $DEFAULT_PATH/terraform
@@ -106,8 +113,13 @@ phases:
 
           cd $DEFAULT_PATH/terraform
           export AWS_PROFILE=aft-management-admin
-          /opt/aft/bin/terraform init -no-color
-          /opt/aft/bin/terraform apply -no-color --auto-approve
+          if [ "$TF_DISTRIBUTION" = "oss" ]; then
+            /opt/aft/bin/terraform init -no-color
+            /opt/aft/bin/terraform apply -no-color --auto-approve
+          else
+            /opt/aft/bin/tofu init -no-color
+            /opt/aft/bin/tofu apply -no-color --auto-approve
+          fi
         else
           TF_ORG_NAME=$(aws ssm get-parameter --name "/aft/config/terraform/org-name" --query "Parameter.Value" --output text)
           TF_TOKEN=$(aws ssm get-parameter --name "/aft/config/terraform/token" --with-decryption --query "Parameter.Value" --output text)

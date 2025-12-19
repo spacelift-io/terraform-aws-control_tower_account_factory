@@ -122,6 +122,7 @@ module "aft_customizations" {
   aft_tf_kms_key_id_ssm_path                        = local.ssm_paths.aft_tf_kms_key_id_ssm_path
   aft_tf_s3_bucket_ssm_path                         = local.ssm_paths.aft_tf_s3_bucket_ssm_path
   aft_tf_version_ssm_path                           = local.ssm_paths.aft_tf_version_ssm_path
+  aft_tf_distribution_ssm_path                      = local.ssm_paths.aft_tf_distribution_ssm_path
   aft_kms_key_id                                    = module.aft_account_request_framework.aft_kms_key_id
   aft_kms_key_arn                                   = module.aft_account_request_framework.aft_kms_key_arn
   aft_common_layer_arn                              = module.aft_lambda_layer.layer_version_arn

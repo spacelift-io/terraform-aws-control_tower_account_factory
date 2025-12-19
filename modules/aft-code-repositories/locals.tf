@@ -20,4 +20,5 @@ locals {
     azuredevops       = lower(var.vcs_provider) == "azuredevops" ? aws_codeconnections_connection.azuredevops[0].arn : ""
     codecommit        = "null"
   }
+  provision_oss = (var.terraform_distribution == "oss" || var.terraform_distribution == "tofu") ? true : false
 }
