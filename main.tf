@@ -275,6 +275,12 @@ module "aft_ssm_parameters" {
   terraform_version                                           = var.terraform_version
   terraform_org_name                                          = var.terraform_org_name
   terraform_project_name                                      = var.terraform_project_name
+  spacelift_api_endpoint                                      = var.spacelift_api_endpoint
+  spacelift_api_key_id                                        = var.spacelift_api_key_id
+  spacelift_api_key_secret                                    = var.spacelift_api_key_secret
+  spacelift_space_name                                        = var.spacelift_space_name
+  spacelift_parent_space_id                                   = var.spacelift_parent_space_id
+  spacelift_iac_vendor                                        = var.spacelift_iac_vendor
   aft_feature_cloudtrail_data_events                          = var.aft_feature_cloudtrail_data_events
   aft_feature_enterprise_support                              = var.aft_feature_enterprise_support
   aft_feature_delete_default_vpcs_enabled                     = var.aft_feature_delete_default_vpcs_enabled

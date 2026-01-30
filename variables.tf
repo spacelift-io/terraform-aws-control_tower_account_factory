@@ -320,12 +320,12 @@ variable "terraform_version" {
 }
 
 variable "terraform_distribution" {
-  description = "Terraform or Opentofu distribution being used for AFT - valid values are oss, tofu, tfc, or tfe"
+  description = "Terraform or Opentofu distribution being used for AFT - valid values are oss, tofu, tfc, tfe, or spacelift"
   type        = string
   default     = "oss"
   validation {
-    condition     = contains(["oss", "tofu", "tfc", "tfe"], var.terraform_distribution)
-    error_message = "Valid values for var: terraform_distribution are (oss, tfc, tfe)."
+    condition     = contains(["oss", "tofu", "tfc", "tfe", "spacelift"], var.terraform_distribution)
+    error_message = "Valid values for var: terraform_distribution are (oss, tofu, tfc, tfe, spacelift)."
   }
 }
 
@@ -378,6 +378,49 @@ variable "terraform_api_endpoint" {
   validation {
     condition     = length(var.terraform_api_endpoint) > 0
     error_message = "Variable var: terraform_api_endpoint cannot be empty."
+  }
+}
+
+# Spacelift Variables
+variable "spacelift_api_endpoint" {
+  description = "API Endpoint for Spacelift GraphQL API. Must be in the format of https://xxx.app.spacelift.io/graphql"
+  type        = string
+  default     = "https://app.spacelift.io/graphql"
+}
+
+variable "spacelift_api_key_id" {
+  description = "API key ID for Spacelift authentication"
+  type        = string
+  default     = "null"
+  sensitive   = true
+}
+
+variable "spacelift_api_key_secret" {
+  description = "API key secret for Spacelift authentication"
+  type        = string
+  default     = "null" # Non-sensitive default value #tfsec:ignore:general-secrets-no-plaintext-exposure
+  sensitive   = true
+}
+
+variable "spacelift_space_name" {
+  description = "Name of the Spacelift Space to create for AFT-managed stacks"
+  type        = string
+  default     = "aft-managed"
+}
+
+variable "spacelift_parent_space_id" {
+  description = "Parent Space ID for the AFT Spacelift Space"
+  type        = string
+  default     = "root"
+}
+
+variable "spacelift_iac_vendor" {
+  description = "IaC vendor for Spacelift stacks - TERRAFORM_FOSS or OPEN_TOFU"
+  type        = string
+  default     = "OPEN_TOFU"
+  validation {
+    condition     = contains(["TERRAFORM_FOSS", "OPEN_TOFU"], var.spacelift_iac_vendor)
+    error_message = "Valid values for var: spacelift_iac_vendor are (TERRAFORM_FOSS, OPEN_TOFU)."
   }
 }
 
