@@ -219,6 +219,12 @@ resource "aws_codebuild_project" "aft_create_pipeline" {
     }
 
     environment_variable {
+      name  = "SSM_TF_DISTRIBUTION"
+      value = var.aft_tf_distribution_ssm_path
+      type  = "PLAINTEXT"
+    }
+
+    environment_variable {
       name  = "AWS_PARTITION"
       value = data.aws_partition.current.partition
       type  = "PLAINTEXT"

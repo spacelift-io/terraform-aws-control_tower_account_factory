@@ -259,3 +259,47 @@ variable "aft_metrics_reporting" {
 variable "aft_codepipeline_customizations_bucket_id" {
   type = string
 }
+
+variable "spacelift_api_endpoint" {
+  description = "Spacelift API endpoint"
+  type        = string
+}
+
+variable "spacelift_api_key_id" {
+  description = "Spacelift API key ID"
+  type        = string
+  sensitive   = true
+}
+
+variable "spacelift_api_key_secret" {
+  description = "Spacelift API key secret"
+  type        = string
+  sensitive   = true
+}
+
+variable "spacelift_space_name" {
+  description = "Spacelift Space name for AFT"
+  type        = string
+}
+
+variable "spacelift_parent_space_id" {
+  description = "Parent Space ID for AFT Space"
+  type        = string
+}
+
+variable "spacelift_iac_vendor" {
+  description = "IaC vendor for Spacelift stacks"
+  type        = string
+}
+
+variable "spacelift_integration_role_arn" {
+  description = "ARN of the IAM role for Spacelift AWS integration"
+  type        = string
+  default     = ""
+}
+
+variable "spacelift_aws_integration_name" {
+  description = "Name for the Spacelift AWS integration"
+  type        = string
+  default     = ""
+}

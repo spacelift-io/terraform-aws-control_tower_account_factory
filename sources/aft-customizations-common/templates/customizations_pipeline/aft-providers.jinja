@@ -4,8 +4,14 @@
 provider "aws" {
   region = "{{ region }}"
 
+{% if tf_distribution_type == "spacelift" -%}
+  assume_role {
+    role_arn    = "{{ target_admin_role_arn }}"
+  }
+{% else -%}
   shared_credentials_files = ["~/.aws/credentials"]
   profile                 = "aft-management"
+{%- endif %}
 
   default_tags {
     tags = {

@@ -211,6 +211,55 @@ resource "aws_ssm_parameter" "terraform_project_name" {
   value = var.terraform_project_name
 }
 
+# Spacelift Configuration Parameters
+resource "aws_ssm_parameter" "spacelift_api_endpoint" {
+  name  = "/aft/config/spacelift/api-endpoint"
+  type  = "String"
+  value = var.spacelift_api_endpoint
+}
+
+resource "aws_ssm_parameter" "spacelift_api_key_id" {
+  name  = "/aft/config/spacelift/api-key-id"
+  type  = "SecureString"
+  value = var.spacelift_api_key_id
+}
+
+resource "aws_ssm_parameter" "spacelift_api_key_secret" {
+  name  = "/aft/config/spacelift/api-key-secret"
+  type  = "SecureString"
+  value = var.spacelift_api_key_secret
+}
+
+resource "aws_ssm_parameter" "spacelift_space_name" {
+  name  = "/aft/config/spacelift/space-name"
+  type  = "String"
+  value = var.spacelift_space_name
+}
+
+resource "aws_ssm_parameter" "spacelift_parent_space_id" {
+  name  = "/aft/config/spacelift/parent-space-id"
+  type  = "String"
+  value = var.spacelift_parent_space_id
+}
+
+resource "aws_ssm_parameter" "spacelift_iac_vendor" {
+  name  = "/aft/config/spacelift/iac-vendor"
+  type  = "String"
+  value = var.spacelift_iac_vendor
+}
+
+resource "aws_ssm_parameter" "spacelift_integration_role_arn" {
+  name  = "/aft/config/spacelift/integration-role-arn"
+  type  = "String"
+  value = var.spacelift_integration_role_arn
+}
+
+resource "aws_ssm_parameter" "spacelift_aws_integration_name" {
+  name  = "/aft/config/spacelift/integration-name"
+  type  = "String"
+  value = var.spacelift_aws_integration_name
+}
+
 resource "aws_ssm_parameter" "aft_execution_role_name" {
   name  = "/aft/resources/iam/aft-execution-role-name"
   type  = "String"

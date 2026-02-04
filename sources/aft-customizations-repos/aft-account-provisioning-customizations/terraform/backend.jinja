@@ -1,7 +1,9 @@
 ## Auto generated backend.tf ##
 ## Updated on: {{ timestamp }} ##
 
-{% if tf_distribution_type == "oss" -%}
+{% if tf_distribution_type == "spacelift" -%}
+# Backend managed by Spacelift - no backend configuration needed
+{% elif tf_distribution_type == "oss" or tf_distribution_type == "tofu" -%}
 terraform {
   required_version = ">= {{ tf_version }}"
   backend "s3" {
