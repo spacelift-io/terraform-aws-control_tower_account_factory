@@ -122,6 +122,7 @@ module "aft_customizations" {
   aft_tf_kms_key_id_ssm_path                        = local.ssm_paths.aft_tf_kms_key_id_ssm_path
   aft_tf_s3_bucket_ssm_path                         = local.ssm_paths.aft_tf_s3_bucket_ssm_path
   aft_tf_version_ssm_path                           = local.ssm_paths.aft_tf_version_ssm_path
+  aft_tf_distribution_ssm_path                      = local.ssm_paths.aft_tf_distribution_ssm_path
   aft_kms_key_id                                    = module.aft_account_request_framework.aft_kms_key_id
   aft_kms_key_arn                                   = module.aft_account_request_framework.aft_kms_key_arn
   aft_common_layer_arn                              = module.aft_lambda_layer.layer_version_arn
@@ -190,6 +191,10 @@ module "aft_iam_roles" {
     aws.log_archive    = aws.log_archive
     aws.aft_management = aws.aft_management
   }
+
+  spacelift_account_name = var.spacelift_account_name
+  spacelift_api_endpoint = var.spacelift_api_endpoint
+  spacelift_enabled      = var.terraform_distribution == "spacelift"
 }
 
 module "aft_lambda_layer" {
@@ -274,6 +279,14 @@ module "aft_ssm_parameters" {
   terraform_version                                           = var.terraform_version
   terraform_org_name                                          = var.terraform_org_name
   terraform_project_name                                      = var.terraform_project_name
+  spacelift_api_endpoint                                      = var.spacelift_api_endpoint
+  spacelift_api_key_id                                        = var.spacelift_api_key_id
+  spacelift_api_key_secret                                    = var.spacelift_api_key_secret
+  spacelift_space_name                                        = var.spacelift_space_name
+  spacelift_parent_space_id                                   = var.spacelift_parent_space_id
+  spacelift_iac_vendor                                        = var.spacelift_iac_vendor
+  spacelift_integration_role_arn                              = module.aft_iam_roles.aft_admin_role_arn
+  spacelift_aws_integration_name                              = var.spacelift_aws_integration_name
   aft_feature_cloudtrail_data_events                          = var.aft_feature_cloudtrail_data_events
   aft_feature_enterprise_support                              = var.aft_feature_enterprise_support
   aft_feature_delete_default_vpcs_enabled                     = var.aft_feature_delete_default_vpcs_enabled

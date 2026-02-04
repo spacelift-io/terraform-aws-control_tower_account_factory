@@ -8,6 +8,8 @@ resource "aws_iam_role" "aft_admin_role" {
   assume_role_policy = templatefile("${path.module}/iam/aft_admin_role_trust_policy.tpl", {
     aft_account_id                       = data.aws_caller_identity.aft_management.account_id
     data_aws_partition_current_partition = data.aws_partition.current.partition
+    enable_spacelift                     = var.spacelift_enabled
+    spacelift_trust_statement            = local.spacelift_trust_statement
   })
 }
 

@@ -21,6 +21,10 @@ variable "aft_tf_backend_region_ssm_path" {
   type = string
 }
 
+variable "aft_tf_distribution_ssm_path" {
+  type = string
+}
+
 variable "aft_tf_kms_key_id_ssm_path" {
   type = string
 }

@@ -34,6 +34,7 @@ locals {
     aft_tf_kms_key_id_ssm_path                        = "/aft/config/oss-backend/kms-key-id"
     aft_tf_ddb_table_ssm_path                         = "/aft/config/oss-backend/table-id"
     aft_tf_version_ssm_path                           = "/aft/config/terraform/version"
+    aft_tf_distribution_ssm_path                      = "/aft/config/terraform/distribution"
   }
   service_catalog_regional_availability = [
     "ca-central-1",

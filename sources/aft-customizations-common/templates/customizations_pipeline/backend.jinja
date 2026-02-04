@@ -1,6 +1,9 @@
 ## Auto generated backend.tf ##
 ## Updated on: {{ timestamp }} ##
 
+{% if tf_distribution_type == "spacelift" -%}
+# Backend managed by Spacelift - no backend configuration needed
+{% elif tf_distribution_type == "oss" or tf_distribution_type == "tofu" -%}
 terraform {
   required_version = ">= {{ tf_version }}"
   backend "s3" {
@@ -10,6 +13,18 @@ terraform {
     dynamodb_table = "{{ dynamodb_table }}"
     encrypt        = "true"
     kms_key_id     = "{{ kms_key_id }}"
-    profile        = "aft-management"
+    assume_role = {
+      role_arn = "{{ aft_admin_role_arn }}"
+    }
   }
 }
+{% else -%}
+terraform {
+  backend "remote" {
+    organization = "{{ terraform_org_name }}"
+    workspaces {
+      name = "{{ terraform_workspace_name }}"
+    }
+  }
+}
+{% endif %}
