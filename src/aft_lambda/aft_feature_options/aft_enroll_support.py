@@ -10,7 +10,7 @@ from aft_common import feature_options, notifications
 from aft_common.account_provisioning_framework import ProvisionRoles
 from aft_common.auth import AuthClient
 from aft_common.logger import customization_request_logger
-from aft_common.premium_support import account_enrollment_requested, generate_case
+from aft_common.premium_support import ensure_enterprise_support_enrollment
 from boto3.session import Session
 
 if TYPE_CHECKING:
@@ -44,11 +44,15 @@ def lambda_handler(event: Dict[str, Any], context: LambdaContext) -> None:
             ).lower()
             == "true"
         ):
-            if not account_enrollment_requested(ct_mgmt_session, target_account_id):
-                logger.info(
-                    "Generating support case for enrolling target account into AWS Enterprise Support"
-                )
-                generate_case(ct_mgmt_session, target_account_id)
+            metadata_table_name = aft_common.ssm.get_ssm_parameter_value(
+                aft_session, utils.SSM_PARAM_AFT_DDB_META_TABLE
+            )
+            ensure_enterprise_support_enrollment(
+                aft_session=aft_session,
+                ct_management_session=ct_mgmt_session,
+                metadata_table_name=metadata_table_name,
+                account_id=target_account_id,
+            )
 
     except Exception as error:
         notifications.send_lambda_failure_sns_message(

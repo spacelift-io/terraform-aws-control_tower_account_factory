@@ -8,6 +8,7 @@ locals {
     identify_targets_function_arn        = aws_lambda_function.aft_customizations_identify_targets.arn
     execute_pipeline_function_arn        = aws_lambda_function.aft_customizations_execute_pipeline.arn
     get_pipeline_executions_function_arn = aws_lambda_function.aft_customizations_get_pipeline_executions.arn
+    audit_trigger_function_arn           = aws_lambda_function.aft_customizations_audit_trigger.arn
     invoke_account_provisioning_sfn_arn  = var.invoke_account_provisioning_sfn_arn
     maximum_concurrent_customizations    = var.maximum_concurrent_customizations
     aft_notification_arn                 = var.aft_sns_topic_arn

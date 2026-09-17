@@ -139,3 +139,12 @@ variable "sns_topic_enable_cmk_encryption" {
 variable "sfn_s3_bucket_object_expiration_days" {
   type = number
 }
+
+
+variable "customizations_audit_table_name" {
+  type = string
+}
+
+variable "customizations_audit_table_arn" {
+  type = string
+}

@@ -159,6 +159,7 @@ resource "aws_iam_role_policy" "aft_invoke_aft_account_provisioning_framework" {
     aws_sns_topic_aft_notifications_arn                = aws_sns_topic.aft_notifications.arn
     aws_sns_topic_aft_failure_notifications_arn        = aws_sns_topic.aft_failure_notifications.arn
     aws_dynamodb_table_aft-request_name                = aws_dynamodb_table.aft_request.name
+    aws_dynamodb_table_aft-request-metadata_name       = aws_dynamodb_table.aft_request_metadata.name
     var_aft_account_provisioning_framework_sfn_name    = var.aft_account_provisioning_framework_sfn_name
     aws_kms_key_aft_arn                                = aws_kms_key.aft.arn
   })

@@ -211,6 +211,18 @@ resource "aws_ssm_parameter" "terraform_project_name" {
   value = var.terraform_project_name
 }
 
+resource "aws_ssm_parameter" "account_request_workspace_name" {
+  name  = "/aft/config/terraform/account-request-workspace-name"
+  type  = "String"
+  value = var.account_request_workspace_name
+}
+
+resource "aws_ssm_parameter" "account_provisioning_customizations_workspace_name" {
+  name  = "/aft/config/terraform/account-provisioning-customizations-workspace-name"
+  type  = "String"
+  value = var.account_provisioning_customizations_workspace_name
+}
+
 resource "aws_ssm_parameter" "terraform_oidc_integration" {
   name  = "/aft/config/terraform/oidc-integration"
   type  = "String"
@@ -348,6 +360,18 @@ resource "aws_ssm_parameter" "aft_feature_delete_default_vpcs_enabled" {
   name  = "/aft/config/feature/delete-default-vpcs-enabled"
   type  = "String"
   value = var.aft_feature_delete_default_vpcs_enabled
+}
+
+resource "aws_ssm_parameter" "aft_customization_triggers" {
+  name  = "/aft/config/customization-triggers"
+  type  = "String"
+  value = var.aft_customization_triggers
+}
+
+resource "aws_ssm_parameter" "aft_customizations_audit_table_name" {
+  name  = "/aft/resources/ddb/aft-customizations-audit-table-name"
+  type  = "String"
+  value = var.aft_customizations_audit_table_name
 }
 
 resource "aws_ssm_parameter" "account_request_repo_name" {

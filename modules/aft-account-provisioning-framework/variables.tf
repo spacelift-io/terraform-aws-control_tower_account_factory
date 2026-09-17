@@ -87,6 +87,10 @@ variable "enable_cloudtrail_lambda_function_name" {
   type = string
 }
 
+variable "audit_trigger_lambda_function_name" {
+  type = string
+}
+
 variable "lambda_runtime_python_version" {
   type = string
 }

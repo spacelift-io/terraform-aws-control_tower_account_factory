@@ -82,6 +82,7 @@ resource "aws_iam_role_policy" "aft_enroll_support" {
     aws_kms_key_aft_arn                         = var.aft_kms_key_arn
     aws_sns_topic_aft_notifications_arn         = var.aft_sns_topic_arn
     aws_sns_topic_aft_failure_notifications_arn = var.aft_failure_sns_topic_arn
+    aft_request_metadata_table_name             = var.aft_request_metadata_table_name
   })
 
 }

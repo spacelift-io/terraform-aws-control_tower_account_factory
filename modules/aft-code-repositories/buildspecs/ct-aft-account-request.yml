@@ -89,7 +89,7 @@ phases:
           TF_TOKEN=$(aws ssm get-parameter --name "/aft/config/terraform/token" --with-decryption --query "Parameter.Value" --output text)
           TF_ENDPOINT=$(aws ssm get-parameter --name "/aft/config/terraform/api-endpoint" --query "Parameter.Value" --output text)
           TF_PROJECT_NAME=$(aws ssm get-parameter --name "/aft/config/terraform/project-name" --query "Parameter.Value" --output text)
-          TF_WORKSPACE_NAME="ct-aft-account-request"
+          TF_WORKSPACE_NAME=$(aws ssm get-parameter --name "/aft/config/terraform/account-request-workspace-name" --query "Parameter.Value" --output text)
           TF_CONFIG_PATH="./temp_configuration_file.tar.gz"
           TF_HCP_OIDC_ENABLED=$(aws ssm get-parameter --name /aft/config/terraform/oidc-integration | jq --raw-output ".Parameter.Value")
           TF_HCP_OIDC_AUDIENCE=$(aws ssm get-parameter --name /aft/config/terraform/oidc-aws-audience | jq --raw-output ".Parameter.Value")

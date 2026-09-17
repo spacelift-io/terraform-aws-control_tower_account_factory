@@ -6,8 +6,9 @@ resource "aws_kms_key" "aft_log_key" {
   description         = "KMS key for encrypt/decrypt log files"
   enable_key_rotation = "true"
   policy = templatefile("${path.module}/kms/key-policies/log-key.tpl", {
-    log_archive_account_id               = var.log_archive_account_id
-    data_aws_partition_current_partition = data.aws_partition.current.partition
+    log_archive_account_id                                  = var.log_archive_account_id
+    data_aws_partition_current_partition                    = data.aws_partition.current.partition
+    data_aws_organizations_organization_aft_organization_id = data.aws_organizations_organization.aft_organization.id
   })
 }
 
@@ -16,4 +17,9 @@ resource "aws_kms_alias" "aft_log_key_alias" {
 
   name          = "alias/aft"
   target_key_id = aws_kms_key.aft_log_key.key_id
+}
+
+resource "time_sleep" "wait_for_kms_key_policy_propagation" {
+  depends_on      = [aws_kms_key.aft_log_key]
+  create_duration = "60s"
 }

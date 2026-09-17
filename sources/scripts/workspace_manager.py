@@ -341,12 +341,25 @@ def stage_destroy(
     return run_id
 
 
-def delete_workspace(organization_name, workspace_name, assume_role_arn, api_token):
+def delete_workspace(
+    organization_name,
+    workspace_name,
+    assume_role_arn,
+    assume_role_session_name,
+    api_token,
+    hcp_oidc_enabled,
+):
     workspace_id = terraform.check_workspace_exists(
         organization_name, workspace_name, api_token
     )
     if workspace_id:
-        stage_destroy(workspace_id, assume_role_arn, api_token)
+        stage_destroy(
+            workspace_id,
+            assume_role_arn,
+            assume_role_session_name,
+            api_token,
+            hcp_oidc_enabled,
+        )
         terraform.delete_workspace(workspace_id, api_token)
     else:
         print(
@@ -413,7 +426,9 @@ if __name__ == "__main__":
             args.organization_name,
             args.workspace_name,
             args.assume_role_arn,
+            args.assume_role_session_name,
             args.api_token,
+            (args.hcp_oidc_enabled == "true"),
         )
     elif args.operation == "deploy":
         setup_and_run_workspace(

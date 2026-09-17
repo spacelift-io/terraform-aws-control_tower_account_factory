@@ -18,7 +18,12 @@
                 "kms:DescribeKey",
                 "kms:Decrypt"
             ],
-            "Resource": "*"
+            "Resource": "*",
+            "Condition": {
+                "StringEquals": {
+                    "aws:SourceOrgID": "${data_aws_organizations_organization_aft_organization_id}"
+                }
+            }
         },
         {
             "Sid": "AllowS3LoggingServiceAccess",

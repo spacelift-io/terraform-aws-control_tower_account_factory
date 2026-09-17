@@ -32,6 +32,8 @@ resource "aws_s3_bucket_logging" "primary-backend-bucket-logging" {
   bucket        = aws_s3_bucket.primary-backend-bucket.id
   target_bucket = aws_s3_bucket.aft_access_logs_primary_backend_bucket.id
   target_prefix = "log/"
+
+  depends_on = [time_sleep.wait_for_access_logs_kms_propagation]
 }
 
 #tfsec:ignore:aws-s3-enable-bucket-logging
@@ -352,6 +354,11 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "aft_access_logs_p
     }
     bucket_key_enabled = true
   }
+}
+
+resource "time_sleep" "wait_for_access_logs_kms_propagation" {
+  depends_on      = [aws_kms_key.aft_access_logs_primary_backend_bucket]
+  create_duration = "60s"
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "aft_access_logs_primary_backend_bucket" {

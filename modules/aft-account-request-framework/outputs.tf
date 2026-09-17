@@ -103,3 +103,14 @@ output "aft_vpc_default_sg" {
 output "vpc_deployment" {
   value = local.vpc_deployment
 }
+
+
+output "customizations_audit_table_name" {
+  description = "Name of the AFT customizations audit DynamoDB table"
+  value       = aws_dynamodb_table.aft_customizations_audit.name
+}
+
+output "customizations_audit_table_arn" {
+  description = "ARN of the AFT customizations audit DynamoDB table"
+  value       = aws_dynamodb_table.aft_customizations_audit.arn
+}

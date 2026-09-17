@@ -128,10 +128,10 @@
           "Next": "aft_account_provisioning_framework_create_pipeline"
         }
       ],
-      "Default": "aft_account_provisioning_framework_notify_success"
+      "Default": "aft_account_provisioning_framework_check_customization_triggers"
     },
     "aft_account_provisioning_framework_create_pipeline": {
-      "Next": "aft_account_provisioning_framework_notify_success",
+      "Next": "aft_account_provisioning_framework_check_customization_triggers",
       "Type": "Task",
       "Resource": "arn:${current_partition}:states:::codebuild:startBuild.sync",
       "Parameters": {
@@ -153,6 +153,47 @@
       "Catch": [
         {
           "ErrorEquals": ["States.ALL"],
+          "Next": "aft_account_provisioning_framework_notify_error"
+        }
+      ]
+    },
+    "aft_account_provisioning_framework_check_customization_triggers": {
+      "Type": "Choice",
+      "QueryLanguage": "JSONata",
+      "Choices": [
+        {
+          "Condition": "{% $exists($states.input.Input.customization_triggers) %}",
+          "Next": "aft_account_provisioning_framework_invoke_customizations"
+        }
+      ],
+      "Default": "aft_account_provisioning_framework_notify_success"
+    },
+    "aft_account_provisioning_framework_invoke_customizations": {
+      "Type": "Task",
+      "Resource": "arn:${current_partition}:states:::states:startExecution",
+      "Parameters": {
+        "StateMachineArn": "${customizations_trigger_state_machine_arn}",
+        "Input": {
+          "include": [
+            {
+              "type": "accounts",
+              "target_value.$": "States.Array($.Input.account_info.account.id)"
+            }
+          ],
+          "bypass_steps": ["provisioning_bootstrap"],
+          "customization_triggers.$": "$.Input.customization_triggers",
+          "customization_request_id.$": "$.Input.customization_request_id"
+        }
+      },
+      "ResultPath": "$.invoke_customizations_result",
+      "ResultSelector": {
+        "executionArn.$": "$.ExecutionArn"
+      },
+      "Next": "aft_account_provisioning_framework_notify_success",
+      "Catch": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "ResultPath": "$.invoke_customizations_error",
           "Next": "aft_account_provisioning_framework_notify_error"
         }
       ]

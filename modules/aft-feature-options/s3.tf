@@ -15,6 +15,8 @@ resource "aws_s3_bucket_logging" "aft_logging_bucket_logging" {
   bucket        = aws_s3_bucket.aft_logging_bucket.id
   target_bucket = aws_s3_bucket.aft_access_logs.id
   target_prefix = "log/"
+
+  depends_on = [time_sleep.wait_for_kms_key_policy_propagation]
 }
 
 resource "aws_s3_bucket_versioning" "aft_logging_bucket_versioning" {

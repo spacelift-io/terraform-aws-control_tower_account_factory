@@ -210,6 +210,16 @@ variable "aft_feature_delete_default_vpcs_enabled" {
   }
 }
 
+variable "aft_customization_triggers" {
+  description = "List of customization trigger tokens. When non-empty, matching events trigger customization re-execution with provisioning bypass. Valid tokens: account_move. Per-account opt-out via account_skip_customization_triggers attribute in aft-request."
+  type        = list(string)
+  default     = []
+  validation {
+    condition     = alltrue([for t in var.aft_customization_triggers : contains(["account_move"], t)])
+    error_message = "Valid values for var: aft_customization_triggers are: account_move."
+  }
+}
+
 #########################################
 # AFT Customer VCS Variables
 #########################################
@@ -378,6 +388,26 @@ variable "terraform_project_name" {
   validation {
     condition     = length(var.terraform_project_name) > 0
     error_message = "Variable var: terraform_project_name cannot be empty."
+  }
+}
+
+variable "account_request_workspace_name" {
+  type        = string
+  description = "Workspace name to use for the account request operation in Terraform Cloud or Enterprise. Note: changing this value for an existing deployment creates a new workspace and orphans the old one - it is not an in-place rename."
+  default     = "ct-aft-account-request"
+  validation {
+    condition     = can(regex("^[a-zA-Z0-9_-]{1,90}$", var.account_request_workspace_name))
+    error_message = "Variable var: account_request_workspace_name may only contain letters, numbers, dashes, and underscores and must be between 1 and 90 characters."
+  }
+}
+
+variable "account_provisioning_customizations_workspace_name" {
+  type        = string
+  description = "Workspace name to use for the account provisioning customizations operation in Terraform Cloud or Enterprise. Note: changing this value for an existing deployment creates a new workspace and orphans the old one - it is not an in-place rename."
+  default     = "ct-aft-account-provisioning-customizations"
+  validation {
+    condition     = can(regex("^[a-zA-Z0-9_-]{1,90}$", var.account_provisioning_customizations_workspace_name))
+    error_message = "Variable var: account_provisioning_customizations_workspace_name may only contain letters, numbers, dashes, and underscores and must be between 1 and 90 characters."
   }
 }
 

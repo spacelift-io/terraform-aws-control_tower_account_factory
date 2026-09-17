@@ -10,7 +10,7 @@
       "Next": "Identify Targets"
     },
     "Identify Targets": {
-      "Next": "Invoke Provisioning Framework",
+      "Next": "Check Bypass",
       "Type": "Task",
       "Resource": "${identify_targets_function_arn}",
       "ResultPath": "$.targets",
@@ -22,6 +22,17 @@
           "Next": "Notify Failure"
         }
       ]
+    },
+    "Check Bypass": {
+      "Type": "Choice",
+      "QueryLanguage": "JSONata",
+      "Choices": [
+        {
+          "Condition": "{% 'provisioning_bootstrap' in $states.input.bypass_steps %}",
+          "Next": "Record Audit"
+        }
+      ],
+      "Default": "Invoke Provisioning Framework"
     },
     "Invoke Provisioning Framework": {
       "Type": "Map",
@@ -53,9 +64,31 @@
           }
         }
       },
-      "Next": "Get Pipeline Executions",
+      "Next": "Record Audit",
       "MaxConcurrency": "${maximum_concurrent_customizations}",
       "ResultPath": null
+    },
+    "Record Audit": {
+      "Type": "Task",
+      "Resource": "arn:${current_partition}:states:::lambda:invoke",
+      "Parameters": {
+        "FunctionName": "${audit_trigger_function_arn}",
+        "Payload.$": "$"
+      },
+      "ResultPath": "$.audit_result",
+      "ResultSelector": {
+        "status.$": "$.Payload.status"
+      },
+      "Next": "Get Pipeline Executions",
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "ResultPath": "$.audit_error",
+          "Next": "Get Pipeline Executions"
+        }
+      ]
     },
     "Get Pipeline Executions": {
       "Next": "Pending Pipeline Executions?",

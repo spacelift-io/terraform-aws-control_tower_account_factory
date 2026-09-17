@@ -162,6 +162,14 @@ variable "terraform_project_name" {
   type = string
 }
 
+variable "account_request_workspace_name" {
+  type = string
+}
+
+variable "account_provisioning_customizations_workspace_name" {
+  type = string
+}
+
 variable "aft_execution_role_name" {
   type = string
 }
@@ -215,6 +223,10 @@ variable "aft_feature_enterprise_support" {
 }
 
 variable "aft_feature_delete_default_vpcs_enabled" {
+  type = string
+}
+
+variable "aft_customization_triggers" {
   type = string
 }
 
@@ -310,4 +322,8 @@ variable "spacelift_aws_integration_name" {
   description = "Name for the Spacelift AWS integration"
   type        = string
   default     = ""
+}
+
+variable "aft_customizations_audit_table_name" {
+  type = string
 }

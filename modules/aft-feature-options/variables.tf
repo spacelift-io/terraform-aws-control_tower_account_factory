@@ -90,3 +90,7 @@ variable "aft_enable_vpc" {
   type = bool
 
 }
+
+variable "aft_request_metadata_table_name" {
+  type = string
+}
