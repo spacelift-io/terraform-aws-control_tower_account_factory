@@ -95,6 +95,27 @@ The following paths do **not** emit an `UpdateManagedAccount` event and therefor
 
 If an account reaches its target OU through one of these paths, re-run customizations manually via the `aft-invoke-customizations` Step Function.
 
+## Versioning
+
+This is a Spacelift-maintained fork of [aws-ia/terraform-aws-control_tower_account_factory](https://github.com/aws-ia/terraform-aws-control_tower_account_factory). To track the upstream version this fork is based on while still being able to cut fork-only releases (e.g. Spacelift-specific fixes) independently of upstream's release cadence, tags and the `VERSION` file follow:
+
+```
+<upstream_version>-spacelift.<n>
+```
+
+For example, `1.21.1-spacelift.1` is the first Spacelift release built on top of upstream's `1.21.1`. A subsequent Spacelift-only fix on that same upstream base is released as `1.21.1-spacelift.2`, and so on. The `<n>` counter resets to `1` whenever this fork is re-synced to a newer upstream release (e.g. the next sync to upstream `1.22.0` is released as `1.22.0-spacelift.1`).
+
+Consumers should pin to a specific tag, e.g.:
+
+```hcl
+module "aft" {
+  source = "git::https://github.com/spacelift-io/terraform-aws-control_tower_account_factory.git?ref=1.21.1-spacelift.1"
+  # ...
+}
+```
+
+Note there is no `v` prefix on these tags (unlike most other Spacelift-maintained Terraform modules). The `VERSION` file's content is used at deploy time as the default git ref for building the AFT Lambda layer (see `aft_framework_repo_git_ref`), so the tag name and the `VERSION` file content must always match exactly.
+
 
 
 <!-- BEGIN_TF_DOCS -->
