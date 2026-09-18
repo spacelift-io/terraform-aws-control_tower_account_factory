@@ -327,3 +327,11 @@ variable "spacelift_aws_integration_name" {
 variable "aft_customizations_audit_table_name" {
   type = string
 }
+
+variable "aft_plan_output_bucket_name" {
+  type = string
+}
+
+variable "aft_plan_output_export_enabled" {
+  type = bool
+}
