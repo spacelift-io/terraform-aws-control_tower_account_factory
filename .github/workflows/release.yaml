@@ -1,0 +1,23 @@
+name: Release
+
+on:
+  push:
+    tags: ['*-spacelift.*']
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    name: Release 🚀
+    steps:
+      - uses: actions/checkout@main
+        with:
+          fetch-depth: 0
+
+      - name: Create release if not exists
+        uses: ncipollo/release-action@v1
+        with:
+          generateReleaseNotes: true

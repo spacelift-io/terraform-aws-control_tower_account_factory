@@ -43,6 +43,11 @@ resource "aws_codebuild_project" "codebuild" {
       value = var.aft_tf_aws_customizations_module_git_ref_ssm_path
       type  = "PLAINTEXT"
     }
+    environment_variable {
+      name  = "AFT_FRAMEWORK_REPO_GIT_REF"
+      value = var.aft_framework_repo_git_ref
+      type  = "PLAINTEXT"
+    }
 
   }
 

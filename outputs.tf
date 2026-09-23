@@ -57,6 +57,10 @@ output "aft_feature_delete_default_vpcs_enabled" {
   value = var.aft_feature_delete_default_vpcs_enabled
 }
 
+output "aft_customization_triggers" {
+  value = var.aft_customization_triggers
+}
+
 #########################################
 # AFT Customer VCS Variables
 #########################################

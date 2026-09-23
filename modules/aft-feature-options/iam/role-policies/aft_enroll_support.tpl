@@ -42,6 +42,16 @@
             "${aws_sns_topic_aft_notifications_arn}",
             "${aws_sns_topic_aft_failure_notifications_arn}"
         ]
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : [
+            "dynamodb:GetItem",
+            "dynamodb:UpdateItem"
+        ],
+        "Resource" : [
+            "arn:${data_aws_partition_current_partition}:dynamodb:${data_aws_region_current_name}:${data_aws_caller_identity_current_account_id}:table/${aft_request_metadata_table_name}"
+        ]
       }
     ]
 }

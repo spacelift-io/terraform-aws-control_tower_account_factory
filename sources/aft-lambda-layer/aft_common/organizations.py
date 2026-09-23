@@ -319,7 +319,7 @@ class OrganizationsAgent:
             name=account["Name"],
             joined_method=account["JoinedMethod"],
             joined_date=str(account["JoinedTimestamp"]),
-            status=account["Status"],
+            status=account["State"],
             parent_id=parent["Id"],
             parent_type=parent["Type"],
             type="account",

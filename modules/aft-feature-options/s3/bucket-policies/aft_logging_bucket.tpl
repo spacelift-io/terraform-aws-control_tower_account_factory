@@ -16,7 +16,12 @@
                 "s3:GetBucketLocation",
                 "s3:GetBucketAcl"
             ],
-            "Resource": "${aws_s3_bucket_aft_logging_bucket_arn}"
+            "Resource": "${aws_s3_bucket_aft_logging_bucket_arn}",
+            "Condition": {
+                "StringEquals": {
+                    "aws:SourceOrgID": "${data_aws_organizations_organization_aft_organization_id}"
+                }
+            }
         },
         {
             "Sid": "AWSBucketPermissionsCheck-AuditAcct",
@@ -49,7 +54,12 @@
                 "${aws_s3_bucket_aft_logging_bucket_arn}/AWSLogs*",
                 "${aws_s3_bucket_aft_logging_bucket_arn}/*",
                 "${aws_s3_bucket_aft_logging_bucket_arn}"
-            ]
+            ],
+            "Condition": {
+                "StringEquals": {
+                    "aws:SourceOrgID": "${data_aws_organizations_organization_aft_organization_id}"
+                }
+            }
         },
         {
             "Sid": "Deny non-HTTPS access",

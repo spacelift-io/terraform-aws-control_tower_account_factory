@@ -125,3 +125,31 @@ resource "aws_dynamodb_table" "aft_controltower_events" {
     kms_key_arn = aws_kms_key.aft.arn
   }
 }
+
+
+# Table that stores execution-level audit data for customization invocations
+resource "aws_dynamodb_table" "aft_customizations_audit" {
+  name         = "aft-customizations-audit"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "execution_id"
+  range_key    = "timestamp"
+
+  attribute {
+    name = "execution_id"
+    type = "S"
+  }
+
+  attribute {
+    name = "timestamp"
+    type = "S"
+  }
+
+  point_in_time_recovery {
+    enabled = true
+  }
+
+  server_side_encryption {
+    enabled     = true
+    kms_key_arn = aws_kms_key.aft.arn
+  }
+}

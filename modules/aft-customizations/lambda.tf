@@ -102,3 +102,36 @@ resource "aws_cloudwatch_log_group" "aft_customizations_invoke_account_provision
   retention_in_days = var.cloudwatch_log_group_retention
   kms_key_id        = var.cloudwatch_log_group_enable_cmk_encryption ? var.aft_kms_key_arn : null
 }
+
+
+######## customizations_audit_trigger ########
+
+#tfsec:ignore:aws-lambda-enable-tracing
+resource "aws_lambda_function" "aft_customizations_audit_trigger" {
+  filename      = var.customizations_archive_path
+  function_name = "aft-customizations-audit-trigger"
+  description   = "Writes audit record for each aft-invoke-customizations execution. Called before pipeline execution."
+  role          = aws_iam_role.aft_customizations_audit_trigger_lambda.arn
+  handler       = "aft_customizations_audit_trigger.lambda_handler"
+
+  source_code_hash = var.customizations_archive_hash
+  memory_size      = 1024
+  runtime          = var.lambda_runtime_python_version
+  timeout          = "120"
+  layers           = [var.aft_common_layer_arn]
+
+  dynamic "vpc_config" {
+    for_each = var.aft_enable_vpc ? [1] : []
+
+    content {
+      subnet_ids         = var.aft_vpc_private_subnets
+      security_group_ids = var.aft_vpc_default_sg
+    }
+  }
+}
+
+resource "aws_cloudwatch_log_group" "aft_customizations_audit_trigger" {
+  name              = "/aws/lambda/${aws_lambda_function.aft_customizations_audit_trigger.function_name}"
+  retention_in_days = var.cloudwatch_log_group_retention
+  kms_key_id        = var.cloudwatch_log_group_enable_cmk_encryption ? var.aft_kms_key_arn : null
+}

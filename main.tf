@@ -32,6 +32,7 @@ module "aft_account_provisioning_framework" {
   delete_default_vpc_lambda_function_name          = local.delete_default_vpc_lambda_function_name
   enroll_support_lambda_function_name              = local.enroll_support_lambda_function_name
   enable_cloudtrail_lambda_function_name           = local.enable_cloudtrail_lambda_function_name
+  audit_trigger_lambda_function_name               = local.audit_trigger_lambda_function_name
   lambda_runtime_python_version                    = local.lambda_runtime_python_version
   sns_topic_enable_cmk_encryption                  = var.sns_topic_enable_cmk_encryption
 }
@@ -150,6 +151,9 @@ module "aft_customizations" {
   codebuild_compute_type                            = var.aft_codebuild_compute_type
   sns_topic_enable_cmk_encryption                   = var.sns_topic_enable_cmk_encryption
   sfn_s3_bucket_object_expiration_days              = var.sfn_s3_bucket_object_expiration_days
+  aft_plan_output_retention_days                    = var.aft_plan_output_retention_days
+  customizations_audit_table_name                   = module.aft_account_request_framework.customizations_audit_table_name
+  customizations_audit_table_arn                    = module.aft_account_request_framework.customizations_audit_table_arn
 }
 
 module "aft_feature_options" {
@@ -182,6 +186,7 @@ module "aft_feature_options" {
   aft_enable_vpc                             = module.aft_account_request_framework.vpc_deployment
   cloudwatch_log_group_enable_cmk_encryption = var.cloudwatch_log_group_enable_cmk_encryption
   sns_topic_enable_cmk_encryption            = var.sns_topic_enable_cmk_encryption
+  aft_request_metadata_table_name            = module.aft_account_request_framework.request_metadata_table_name
 }
 
 module "aft_iam_roles" {
@@ -216,6 +221,7 @@ module "aft_lambda_layer" {
   lambda_runtime_python_version                     = local.lambda_runtime_python_version
   aft_tf_aws_customizations_module_git_ref_ssm_path = local.ssm_paths.aft_tf_aws_customizations_module_git_ref_ssm_path
   aft_tf_aws_customizations_module_url_ssm_path     = local.ssm_paths.aft_tf_aws_customizations_module_url_ssm_path
+  aft_framework_repo_git_ref                        = local.aft_framework_repo_git_ref
   aws_region                                        = var.ct_home_region
   aft_kms_key_arn                                   = module.aft_account_request_framework.aft_kms_key_arn
   aft_vpc_id                                        = module.aft_account_request_framework.aft_vpc_id
@@ -286,6 +292,8 @@ module "aft_ssm_parameters" {
   terraform_version                                           = var.terraform_version
   terraform_org_name                                          = var.terraform_org_name
   terraform_project_name                                      = var.terraform_project_name
+  account_request_workspace_name                              = var.account_request_workspace_name
+  account_provisioning_customizations_workspace_name          = var.account_provisioning_customizations_workspace_name
   terraform_oidc_integration                                  = var.terraform_oidc_integration
   terraform_oidc_aws_audience                                 = var.terraform_oidc_aws_audience
   spacelift_api_endpoint                                      = var.spacelift_api_endpoint
@@ -299,6 +307,8 @@ module "aft_ssm_parameters" {
   aft_feature_cloudtrail_data_events                          = var.aft_feature_cloudtrail_data_events
   aft_feature_enterprise_support                              = var.aft_feature_enterprise_support
   aft_feature_delete_default_vpcs_enabled                     = var.aft_feature_delete_default_vpcs_enabled
+  aft_customization_triggers                                  = jsonencode(var.aft_customization_triggers)
+  aft_customizations_audit_table_name                         = module.aft_account_request_framework.customizations_audit_table_name
   account_customizations_repo_name                            = var.account_customizations_repo_name
   account_customizations_repo_branch                          = var.account_customizations_repo_branch
   global_customizations_repo_name                             = var.global_customizations_repo_name
@@ -309,5 +319,7 @@ module "aft_ssm_parameters" {
   github_enterprise_url                                       = var.github_enterprise_url
   gitlab_selfmanaged_url                                      = var.gitlab_selfmanaged_url
   aft_codepipeline_customizations_bucket_id                   = module.aft_customizations.aft_codepipeline_customizations_bucket_name
+  aft_plan_output_bucket_name                                 = module.aft_customizations.aft_plan_output_bucket_name
+  aft_plan_output_export_enabled                              = var.aft_plan_output_export_enabled
   aft_metrics_reporting                                       = var.aft_metrics_reporting
 }

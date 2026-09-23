@@ -36,6 +36,7 @@ resource "aws_iam_role_policy" "aft_codebuild_customizations_policy" {
 
   policy = templatefile("${path.module}/iam/role-policies/aft_codebuild_customizations_policy.tpl", {
     aws_s3_bucket_aft_codepipeline_customizations_bucket_arn = aws_s3_bucket.aft_codepipeline_customizations_bucket.arn
+    aws_s3_bucket_aft_plan_output_bucket_arn                 = aws_s3_bucket.aft_plan_output.arn
     data_aws_partition_current_partition                     = data.aws_partition.current.partition
     data_aws_region_current_name                             = data.aws_region.current.region
     data_aws_caller_identity_current_account_id              = data.aws_caller_identity.current.account_id
@@ -181,4 +182,33 @@ resource "aws_iam_role_policy" "terraform_oss_backend_codebuild_customizations_p
     aws_s3_bucket_aft_terraform_oss_backend_bucket_id = var.aft_config_backend_bucket_id
     aws_s3_bucket_aft_terraform_oss_kms_key_id        = var.aft_config_backend_kms_key_id
   })
+}
+
+
+###################################################################
+# Lambda - Customizations Audit Trigger
+###################################################################
+
+resource "aws_iam_role" "aft_customizations_audit_trigger_lambda" {
+  name               = "aft-customizations-audit-trigger-execution-role"
+  assume_role_policy = templatefile("${path.module}/iam/trust-policies/lambda.tpl", { none = "none" })
+}
+
+resource "aws_iam_role_policy" "aft_customizations_audit_trigger_lambda" {
+  name = "aft-customizations-audit-trigger-policy"
+  role = aws_iam_role.aft_customizations_audit_trigger_lambda.id
+
+  policy = templatefile("${path.module}/iam/role-policies/aft_customizations_audit_trigger_lambda.tpl", {
+    data_aws_caller_identity_current_account_id = data.aws_caller_identity.current.account_id
+    data_aws_partition_current_partition        = data.aws_partition.current.partition
+    data_aws_region_current_name                = data.aws_region.current.region
+    aws_kms_key_aft_arn                         = var.aft_kms_key_arn
+    aft_customizations_audit_table_arn          = var.customizations_audit_table_arn
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "aft_customizations_audit_trigger_lambda" {
+  count      = length(local.lambda_managed_policies)
+  role       = aws_iam_role.aft_customizations_audit_trigger_lambda.name
+  policy_arn = local.lambda_managed_policies[count.index]
 }

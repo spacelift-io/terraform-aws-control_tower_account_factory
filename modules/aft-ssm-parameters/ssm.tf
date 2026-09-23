@@ -211,6 +211,18 @@ resource "aws_ssm_parameter" "terraform_project_name" {
   value = var.terraform_project_name
 }
 
+resource "aws_ssm_parameter" "account_request_workspace_name" {
+  name  = "/aft/config/terraform/account-request-workspace-name"
+  type  = "String"
+  value = var.account_request_workspace_name
+}
+
+resource "aws_ssm_parameter" "account_provisioning_customizations_workspace_name" {
+  name  = "/aft/config/terraform/account-provisioning-customizations-workspace-name"
+  type  = "String"
+  value = var.account_provisioning_customizations_workspace_name
+}
+
 resource "aws_ssm_parameter" "terraform_oidc_integration" {
   name  = "/aft/config/terraform/oidc-integration"
   type  = "String"
@@ -350,6 +362,18 @@ resource "aws_ssm_parameter" "aft_feature_delete_default_vpcs_enabled" {
   value = var.aft_feature_delete_default_vpcs_enabled
 }
 
+resource "aws_ssm_parameter" "aft_customization_triggers" {
+  name  = "/aft/config/customization-triggers"
+  type  = "String"
+  value = var.aft_customization_triggers
+}
+
+resource "aws_ssm_parameter" "aft_customizations_audit_table_name" {
+  name  = "/aft/resources/ddb/aft-customizations-audit-table-name"
+  type  = "String"
+  value = var.aft_customizations_audit_table_name
+}
+
 resource "aws_ssm_parameter" "account_request_repo_name" {
   name  = "/aft/config/account-request/repo-name"
   type  = "String"
@@ -437,6 +461,18 @@ resource "aws_ssm_parameter" "aft_maximum_concurrent_customizations" {
 resource "aws_ssm_parameter" "aft_codepipeline_customizations_bucket_id" {
   name  = "/aft/config/customizations/aft_codepipeline_customizations_bucket_id"
   value = var.aft_codepipeline_customizations_bucket_id
+  type  = "String"
+}
+
+resource "aws_ssm_parameter" "aft_plan_output_bucket_name" {
+  name  = "/aft/resources/s3/aft-plan-output-bucket-name"
+  value = var.aft_plan_output_bucket_name
+  type  = "String"
+}
+
+resource "aws_ssm_parameter" "aft_plan_output_export_to_s3" {
+  name  = "/aft/config/plan-output/export-to-s3"
+  value = var.aft_plan_output_export_enabled ? "true" : "false"
   type  = "String"
 }
 

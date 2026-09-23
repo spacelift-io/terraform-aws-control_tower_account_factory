@@ -18,6 +18,21 @@
         "Type": "Task",
         "Resource": "${ aft_enroll_support_function_arn}",
         "ResultPath": "$.targets",
+        "Retry": [
+          {
+            "ErrorEquals": [
+              "Lambda.ServiceException",
+              "Lambda.AWSLambdaException",
+              "Lambda.SdkClientException",
+              "Lambda.TooManyRequestsException"
+            ],
+            "IntervalSeconds": 30,
+            "MaxAttempts": 5,
+            "BackoffRate": 2,
+            "JitterStrategy": "FULL",
+            "MaxDelaySeconds": 300
+          }
+        ],
         "Catch": [
           {
             "ErrorEquals": ["States.ALL"],

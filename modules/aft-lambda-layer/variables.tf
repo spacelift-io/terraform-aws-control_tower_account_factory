@@ -17,6 +17,11 @@ variable "aft_tf_aws_customizations_module_git_ref_ssm_path" {
   type = string
 }
 
+variable "aft_framework_repo_git_ref" {
+  type        = string
+  description = "Git ref to clone the AFT framework from. Passed directly to CodeBuild to avoid SSM race conditions during upgrades."
+}
+
 variable "aws_region" {
   type = string
 }

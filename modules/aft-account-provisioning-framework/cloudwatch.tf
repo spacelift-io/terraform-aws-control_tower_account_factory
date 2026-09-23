@@ -12,6 +12,7 @@ resource "aws_cloudwatch_query_definition" "customization_request_query" {
     "/aws/lambda/${var.delete_default_vpc_lambda_function_name}",
     "/aws/lambda/${var.enroll_support_lambda_function_name}",
     "/aws/lambda/${var.enable_cloudtrail_lambda_function_name}",
+    "/aws/lambda/${var.audit_trigger_lambda_function_name}",
   ]
 
   query_string = <<EOF
@@ -32,6 +33,7 @@ resource "aws_cloudwatch_query_definition" "account_id_query" {
     "/aws/lambda/${var.delete_default_vpc_lambda_function_name}",
     "/aws/lambda/${var.enroll_support_lambda_function_name}",
     "/aws/lambda/${var.enable_cloudtrail_lambda_function_name}",
+    "/aws/lambda/${var.audit_trigger_lambda_function_name}",
   ]
 
   query_string = <<EOF
